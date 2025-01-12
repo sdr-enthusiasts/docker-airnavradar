@@ -33,7 +33,7 @@ RUN set -x && \
     apt-get install -q -o Dpkg::Options::="--force-confnew" -y --no-install-recommends  --no-install-suggests \
             "${RB24_PACKAGES[@]}"
 
-FROM ghcr.io/sdr-enthusiasts/docker-baseimage:base
+FROM ghcr.io/sdr-enthusiasts/docker-baseimage:wreadsb
 
 # This is the final image
 
@@ -60,13 +60,6 @@ RUN \
     KEPT_PACKAGES=() && \
     # required for adding rb24 repo
     # TEMP_PACKAGES+=(gnupg) && \
-    # mlat-client dependencies
-    # TEMP_PACKAGES+=(build-essential) && \
-    # TEMP_PACKAGES+=(git) && \
-    # KEPT_PACKAGES+=(python3-minimal) && \
-    # KEPT_PACKAGES+=(python3-distutils) && \
-    # TEMP_PACKAGES+=(libpython3-dev) && \
-    KEPT_PACKAGES+=(python3-pkg-resources) && \
     # required to run rbfeeder
     if [ "${TARGETARCH:0:3}" != "arm" ]; then \
         dpkg --add-architecture armhf; \
@@ -98,12 +91,6 @@ RUN \
     cp -f /downloader/usr/bin/dump1090-rb /usr/bin/dump1090-rb && \
     cp -f /downloader/usr/share/doc/rbfeeder/* /usr/share/doc/rbfeeder/ && \
     cp -f /app/rootfs/usr/bin/rbfeeder_wrapper.sh /usr/bin/rbfeeder_wrapper.sh && \
-    # install mlat-client
-    tar zxf /downloader/mlatclient.tgz -C / && \
-    # symlink for rbfeeder wrapper
-    ln -s /usr/bin/rbfeeder_wrapper.sh /usr/bin/rbfeeder && \
-    # test mlat-client
-    mlat-client --help > /dev/null && \
     # test rbfeeder & get version
     /usr/bin/rbfeeder --version && \
     RBFEEDER_VERSION=$(/usr/bin/rbfeeder --no-start --version | cut -d " " -f 2,4 | tr -d ")" | tr " " "-") && \
