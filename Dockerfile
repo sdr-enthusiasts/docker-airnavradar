@@ -91,6 +91,8 @@ RUN \
     cp -f /downloader/usr/bin/dump1090-rb /usr/bin/dump1090-rb && \
     cp -f /downloader/usr/share/doc/rbfeeder/* /usr/share/doc/rbfeeder/ && \
     cp -f /app/rootfs/usr/bin/rbfeeder_wrapper.sh /usr/bin/rbfeeder_wrapper.sh && \
+    # symlink for rbfeeder wrapper
+    ln -s /usr/bin/rbfeeder_wrapper.sh /usr/bin/rbfeeder && \
     # test rbfeeder & get version
     /usr/bin/rbfeeder --version && \
     RBFEEDER_VERSION=$(/usr/bin/rbfeeder --no-start --version | cut -d " " -f 2,4 | tr -d ")" | tr " " "-") && \
