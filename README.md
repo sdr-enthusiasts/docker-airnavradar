@@ -135,7 +135,7 @@ You may also receive a spurious error `Error authenticating Sharing-Key: Invalid
 
 Here is some example output with RBFeeder Version 1.0.10 (build 20231120150000) showing the aforementioned behaviour:
 
-```text
+```shell
 [2023-11-22 21:59:06.966][rbfeeder] [2023-11-22 21:59:06]  Starting RBFeeder Version 1.0.10 (build 20231120150000)
 [2023-11-22 21:59:06.966][rbfeeder] [2023-11-22 21:59:06]  Using configuration file: /etc/rbfeeder.ini
 [2023-11-22 21:59:06.966][rbfeeder] [2023-11-22 21:59:06]  Network-mode enabled.
@@ -160,24 +160,24 @@ Here is some example output with RBFeeder Version 1.0.10 (build 20231120150000) 
 
 There are a series of available environment variables:
 
-| Environment Variable     | Purpose                                                                                    | Default  |
-| ------------------------ | ------------------------------------------------------------------------------------------ | -------- |
-| `BEASTHOST`              | Required. IP/Hostname of a Mode-S/BEAST provider (dump1090/readsb)                         | `readsb` |
-| `BEASTPORT`              | Optional. TCP port number of Mode-S/BEAST provider (dump1090/readsb)                       | `30005`  |
-| `UAT_RECEIVER_HOST`      | Optional. IP/Hostname of an external UAT decoded JSON provider (eg: dump978-fa).           |          |
-| `UAT_RECEIVER_PORT`      | Optional. TCP port number of the external UAT decoded JSON provider.                       | `30979`  |
-| `SHARING_KEY`            | Required. Airnav Radar Sharing Key                                                             |          |
-| `LAT`                    | Required. Latitude of the antenna                                                          |          |
-| `LONG`                   | Required. Longitude of the antenna                                                         |          |
-| `ALT`                    | Required. Altitude in _metres_                                                             |          |
-| `TZ`                     | Optional. Your local timezone                                                              | GMT      |
-| `STATS_INTERVAL_MINUTES` | Optional. How often to print statistics, in minutes.                                       | `5`      |
-| `VERBOSE_LOGGING`        | Optional. Set to `true` for no filtering of `rbfeeder` logs.                               | `false`  |
-| `DEBUG_LEVEL`            | Optional. Set to any number between `0` and `8` to increase verbosity of `rbfeeder` logs.  | `0`      |
-| `ENABLE_MLAT`            | Option. Set to `true` to enable MLAT inside of the container. See [MLAT note](#mlat) below | `true`   |
-| `MLAT_RESULTS_BEASTHOST` | a hostname or IP, where MLAT results should be sent. (disables 30105 results listen port)  |          |
-| `MLAT_RESULTS_BEASTPORT` | a port number, specify the TCP port number where MLAT results should be sent.              | `30104`  |
-| `RB_SERVER`              | Optional. If set to `true`, the container will attempt to connect to one of two Airnav Radar Servers that are known to work as of 22-Nov-2023. You can also explicitly set it to a hostname or IP address. If unset, the default settings of Airnav Radar will be used. | Unset |
+| Environment Variable     | Purpose                                                                                                                                                                                                                                                                 | Default  |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `BEASTHOST`              | Required. IP/Hostname of a Mode-S/BEAST provider (dump1090/readsb)                                                                                                                                                                                                      | `readsb` |
+| `BEASTPORT`              | Optional. TCP port number of Mode-S/BEAST provider (dump1090/readsb)                                                                                                                                                                                                    | `30005`  |
+| `UAT_RECEIVER_HOST`      | Optional. IP/Hostname of an external UAT decoded JSON provider (eg: dump978-fa).                                                                                                                                                                                        |          |
+| `UAT_RECEIVER_PORT`      | Optional. TCP port number of the external UAT decoded JSON provider.                                                                                                                                                                                                    | `30979`  |
+| `SHARING_KEY`            | Required. Airnav Radar Sharing Key                                                                                                                                                                                                                                      |          |
+| `LAT`                    | Required. Latitude of the antenna                                                                                                                                                                                                                                       |          |
+| `LONG`                   | Required. Longitude of the antenna                                                                                                                                                                                                                                      |          |
+| `ALT`                    | Required. Altitude in _metres_                                                                                                                                                                                                                                          |          |
+| `TZ`                     | Optional. Your local timezone                                                                                                                                                                                                                                           | GMT      |
+| `STATS_INTERVAL_MINUTES` | Optional. How often to print statistics, in minutes.                                                                                                                                                                                                                    | `5`      |
+| `VERBOSE_LOGGING`        | Optional. Set to `true` for no filtering of `rbfeeder` logs.                                                                                                                                                                                                            | `false`  |
+| `DEBUG_LEVEL`            | Optional. Set to any number between `0` and `8` to increase verbosity of `rbfeeder` logs.                                                                                                                                                                               | `0`      |
+| `ENABLE_MLAT`            | Option. Set to `true` to enable MLAT inside of the container. See [MLAT note](#mlat) below                                                                                                                                                                              | `true`   |
+| `MLAT_RESULTS_BEASTHOST` | a hostname or IP, where MLAT results should be sent. (disables 30105 results listen port)                                                                                                                                                                               |          |
+| `MLAT_RESULTS_BEASTPORT` | a port number, specify the TCP port number where MLAT results should be sent.                                                                                                                                                                                           | `30104`  |
+| `RB_SERVER`              | Optional. If set to `true`, the container will attempt to connect to one of two Airnav Radar Servers that are known to work as of 22-Nov-2023. You can also explicitly set it to a hostname or IP address. If unset, the default settings of Airnav Radar will be used. | Unset    |
 
 ## Ports
 
