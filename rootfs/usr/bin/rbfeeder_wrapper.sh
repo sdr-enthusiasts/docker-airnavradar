@@ -13,6 +13,9 @@ if /usr/bin/rbfeeder_arm --no-start --version >/dev/null 2>&1; then
 elif qemu-arm-static /usr/bin/rbfeeder_arm --no-start --version >/dev/null 2>&1; then
     exec qemu-arm-static /usr/bin/rbfeeder_arm "$@"
 else
+    # run both commands so we get an error message
+    /usr/bin/rbfeeder_arm --no-start --version
+    qemu-arm-static /usr/bin/rbfeeder_arm --no-start --version
     echo "[ERROR] Could not run rbfeeder natively or via qemu"
     exit 1
 fi
