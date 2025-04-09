@@ -50,6 +50,9 @@ jobs:
       push_enabled: false
       platform_linux_arm32v6_enabled: false
       platform_linux_i386_enabled: false
+      build_version_specific: false
+      build_platform_specific: false
+      build_nohealthcheck: false
       get_version_method: file_in_container:file=/CONTAINER_VERSION
 
   # test_build:
