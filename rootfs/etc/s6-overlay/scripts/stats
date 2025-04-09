@@ -9,7 +9,7 @@ if chk_enabled "$QUIET_LOGS"; then
     stop_service
 fi
 
-PACKET_LINES="$(grep -e 'Packets sent in the last 60 seconds: ' "$RBFEEDER_LOG_FILE" | tail -n ${STATS_INTERVAL_MINUTES})"
+PACKET_LINES="$(grep -e 'Packets sent in the last 60 seconds: ' "$RBFEEDER_LOG_FILE" | tail -n "${STATS_INTERVAL_MINUTES}")"
 
 if [[ -n "$PACKET_LINES" ]]; then
 
