@@ -1,11 +1,11 @@
-FROM ghcr.io/sdr-enthusiasts/docker-baseimage:mlatclient as downloader
+FROM ghcr.io/sdr-enthusiasts/docker-baseimage:mlatclient AS downloader
 
 # This downloader image has the rb24 apt repo added, and allows for downloading and extracting of rbfeeder binary deb package.
 ARG TARGETPLATFORM TARGETOS TARGETARCH
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# hadolint ignore=DL3008,SC2086,SC2039,SC2068
+# hadolint ignore=DL3008,SC2086,SC2039,SC2068,SC1091
 RUN set -x && \
     # install prereqs
     apt-get update && \
@@ -16,22 +16,34 @@ RUN set -x && \
     && \
     # add rb24 repo
     if [ "${TARGETARCH:0:3}" != "arm" ]; then \
-        dpkg --add-architecture armhf; \
-        RB24_PACKAGES=(rbfeeder:armhf); \
+    dpkg --add-architecture armhf; \
+    RB24_PACKAGES=(rbfeeder:armhf); \
     else \
-        RB24_PACKAGES=(rbfeeder); \
+    RB24_PACKAGES=(rbfeeder); \
     fi && \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 1D043681 && \
-    bash -c "echo 'deb https://apt.rb24.com/ bullseye main' > /etc/apt/sources.list.d/rb24.list" && \
+    #apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 1D043681 && \
+    #bash -c "echo 'deb https://apt.rb24.com/ bookworm main' > /etc/apt/sources.list.d/rb24.list" && \
+    gpg --recv-keys --keyserver keyserver.ubuntu.com 1D043681 && \
+    gpg --export 1D043681 | tee /usr/share/keyrings/rb24.gpg && \
+    echo "deb [arch=armhf signed-by=/usr/share/keyrings/rb24.gpg] https://apt.rb24.com/ bullseye main" | tee /etc/apt/sources.list.d/rb24.list > /dev/null && \
     #
     # The lines below would allow the apt.rb24.com repo to be access insecurely. We were using this because their key had expired
     # However, as of 1-feb-2024, the repo was updated to contain again a valid key so this is no longer needed. Leaving it in as an archifact for future reference.
     # apt-get update -q --allow-insecure-repositories && \
     # apt-get install -q -o Dpkg::Options::="--force-confnew" -y --no-install-recommends  --no-install-suggests --allow-unauthenticated \
     #         "${RB24_PACKAGES[@]}"; \
+    . /etc/os-release && \
+    # distro="$ID" && \
+    # version="$VERSION_ID" && \
+    codename="$VERSION_CODENAME" && \
+    if [[ "$codename" == "trixie" ]]; then \
+    RB24_PACKAGES+=(libglib2.0-0t64); \
+    else \
+    RB24_PACKAGES+=(libglib2.0-0); \
+    fi && \
     apt-get update -q && \
     apt-get install -q -o Dpkg::Options::="--force-confnew" -y --no-install-recommends  --no-install-suggests \
-            "${RB24_PACKAGES[@]}"
+    "${RB24_PACKAGES[@]}"
 
 FROM ghcr.io/sdr-enthusiasts/docker-baseimage:wreadsb
 
@@ -62,23 +74,23 @@ RUN \
     # TEMP_PACKAGES+=(gnupg) && \
     # required to run rbfeeder
     if [ "${TARGETARCH:0:3}" != "arm" ]; then \
-        dpkg --add-architecture armhf; \
-        KEPT_PACKAGES+=(libc6:armhf) && \
-        KEPT_PACKAGES+=(libcurl4:armhf) && \
-        KEPT_PACKAGES+=(libglib2.0-0:armhf) && \
-        KEPT_PACKAGES+=(libjansson4:armhf) && \
-        KEPT_PACKAGES+=(libprotobuf-c1:armhf) && \
-        KEPT_PACKAGES+=(librtlsdr0:armhf) && \
-        KEPT_PACKAGES+=(libbladerf2:armhf); \
-        KEPT_PACKAGES+=(qemu-user-static); \
+    dpkg --add-architecture armhf; \
+    KEPT_PACKAGES+=(libc6:armhf) && \
+    KEPT_PACKAGES+=(libcurl4:armhf) && \
+    KEPT_PACKAGES+=(libglib2.0-0:armhf) && \
+    KEPT_PACKAGES+=(libjansson4:armhf) && \
+    KEPT_PACKAGES+=(libprotobuf-c1:armhf) && \
+    KEPT_PACKAGES+=(librtlsdr0:armhf) && \
+    KEPT_PACKAGES+=(libbladerf2:armhf); \
+    KEPT_PACKAGES+=(qemu-user-static); \
     else \
-        KEPT_PACKAGES+=(libc6) && \
-        KEPT_PACKAGES+=(libcurl4) && \
-        KEPT_PACKAGES+=(libglib2.0-0) && \
-        KEPT_PACKAGES+=(libjansson4) && \
-        KEPT_PACKAGES+=(libprotobuf-c1) && \
-        KEPT_PACKAGES+=(librtlsdr0); \
-        KEPT_PACKAGES+=(libbladerf2); \
+    KEPT_PACKAGES+=(libc6) && \
+    KEPT_PACKAGES+=(libcurl4) && \
+    KEPT_PACKAGES+=(libglib2.0-0) && \
+    KEPT_PACKAGES+=(libjansson4) && \
+    KEPT_PACKAGES+=(libprotobuf-c1) && \
+    KEPT_PACKAGES+=(librtlsdr0); \
+    KEPT_PACKAGES+=(libbladerf2); \
     fi && \
     KEPT_PACKAGES+=(netbase) && \
     # install packages
