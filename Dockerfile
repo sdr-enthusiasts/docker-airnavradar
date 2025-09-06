@@ -42,7 +42,7 @@
 
 # docker-airnavradar:latest-build-759 was built Mar 22 2025 let's hope this is entirely unaffected
 # again this is just a stopgap measure (really there is no guarantee about any version of their software)
-FROM ghcr.io/sdr-enthusiasts/docker-airnavradar:latest-build-793 AS downloader
+FROM ghcr.io/sdr-enthusiasts/docker-airnavradar:latest-build-802 AS downloader
 
 FROM ghcr.io/sdr-enthusiasts/docker-baseimage:wreadsb
 
