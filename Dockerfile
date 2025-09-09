@@ -1,4 +1,4 @@
-FROM ghcr.io/sdr-enthusiasts/docker-baseimage:mlatclient as downloader
+FROM ghcr.io/sdr-enthusiasts/docker-baseimage:mlatclient AS downloader
 
 # This downloader image has the rb24 apt repo added, and allows for downloading and extracting of rbfeeder binary deb package.
 ARG TARGETPLATFORM TARGETOS TARGETARCH
