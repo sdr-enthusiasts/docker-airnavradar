@@ -97,6 +97,8 @@ RUN \
     ln -s /usr/bin/rbfeeder_wrapper.sh /usr/bin/rbfeeder && \
     # test rbfeeder & get version
     /usr/bin/rbfeeder --version && \
+    # log the md5sum for the rbfeeder executable as well
+    md5sum /usr/bin/rbfeeder_arm && \
     RBFEEDER_VERSION=$(/usr/bin/rbfeeder --no-start --version | cut -d " " -f 2,4 | tr -d ")" | tr " " "-") && \
     echo "$RBFEEDER_VERSION" > /CONTAINER_VERSION && \
     # delete unnecessary qemu binaries to save lots of space
