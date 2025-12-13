@@ -15,3 +15,18 @@ jobs:
       ghcr_repo: ${{ github.repository }}
     secrets:
       ghcr_token: ${{ secrets.GITHUB_TOKEN }}
+
+  require_test_build_success:
+    name: Require test_build success
+    runs-on: ubuntu-latest
+    needs: [test_build]
+    if: always()
+    steps:
+      - name: Fail if test_build did not succeed
+        run: |
+          echo "test_build result: ${{ needs.test_build.result }}"
+
+          if [ "${{ needs.test_build.result }}" != "success" ]; then
+            echo "::error::test_build workflow did not fully succeed"
+            exit 1
+          fi
