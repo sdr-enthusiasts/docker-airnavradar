@@ -128,18 +128,18 @@ if [[ -n "$RB_SERVER" ]]; then
   # Note, the default setting in rbfeeder is rpiserver-ng.rb24.com, which resolves to the 6 IP addresses below.
   # As of 22-Nov-2023, the following IP addresses are known to work: 79.133.49.85 (Frankfurt server) 23.29.123.254 (Austin, TX US server)
   # The following IP addresses are known NOT to work: 46.21.149.109 23.29.123.240 46.21.149.110 79.133.49.90
-  
-  if chk_enabled "$RB_SERVER"; then 
+
+  if chk_enabled "$RB_SERVER"; then
     tz_offset="$(date +%:::z | sed 's/^\+//;s/^0//;s/^-0/-/')"
     if (( $(bc -l <<< "$tz_offset < -2") )); then
-      # Timezone is in the Western Hemisphere - use the US server IP 
+      # Timezone is in the Western Hemisphere - use the US server IP
       RB_SERVER="23.29.123.254"
     else
       # Timezone is in the Eastern Hemisphere - use the EU server IP
       RB_SERVER="79.133.49.85"
     fi
   fi
-  { 
+  {
     echo ""
     echo "[server]"
     echo "a_host=${RB_SERVER}"

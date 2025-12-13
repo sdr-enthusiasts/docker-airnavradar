@@ -23,7 +23,7 @@ if (( (TIMESTAMP_NOW - LASTLOG_TIMESTAMP) > WATCHDOG_TIMER )) || (( LASTLOG_NUM_
     "${s6wrap[@]}" echo "[WARNING] No packets sent in past $WATCHDOG_TIMER seconds. Restarting rbfeeder binary"
     HEALTHY=false
 else
-    if chk_enabled "$VERBOSE_LOGGING"; then "${s6wrap[@]}" echo "[INFO] $LASTLOG_NUM_PACKETS_SENT packets sent in past 30 seconds. HEALTHY"; fi 
+    if chk_enabled "$VERBOSE_LOGGING"; then "${s6wrap[@]}" echo "[INFO] $LASTLOG_NUM_PACKETS_SENT packets sent in past 30 seconds. HEALTHY"; fi
 fi
 
 CUR_BEASTIP="$(sed -n 's/external_host=\(.*\)/\1/p' /etc/rbfeeder.ini)"
@@ -38,7 +38,7 @@ fi
 
 # check that BEASTHOST's IP hasn't changed
 NEW_BEASTIP="$(s6-dnsip4 "$BEASTHOST" 2>/dev/null | head -1)" || true
-if [[ -z "$NEW_BEASTIP" ]]; then 
+if [[ -z "$NEW_BEASTIP" ]]; then
     # if s6-dnsip4 didn't return an IP address, it was probably because it BEASTHOST was already an IP address
     # or because the hostname couldn't be resolved. In either case - we don't bother watchdogging it
     NEW_BEASTIP="$CUR_BEASTIP"

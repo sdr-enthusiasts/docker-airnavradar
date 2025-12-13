@@ -1,0 +1,15 @@
+---
+name: Test Build
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  test_build:
+    name: Test Image Build
+    uses: sdr-enthusiasts/common-github-workflows/.github/workflows/sdre.yml@main
+    with:
+      push_enabled: false
+      ghcr_repo_owner: ${{ github.repository_owner }}
+      ghcr_repo: ${{ github.repository }}

@@ -25,6 +25,7 @@ You can now map this file into your container.
 If using `docker run`, simply add `-v /opt/adsb/rb/radarbox_segfault_fix:/sys/class/thermal:ro` to your command.
 
 If using `docker-compose`, add the following to the `volumes:` section of your radarbox container definition:
+
 ```yaml
 volumes:
   - /opt/adsb/rb/:/sys/class/thermal
@@ -63,4 +64,3 @@ If using `docker-compose`, add the following to the `volumes:` section of your r
 ```yaml
 - /opt/adsb/rb/fake_cpuinfo:/proc/cpuinfo
 ```
-
