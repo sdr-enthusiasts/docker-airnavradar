@@ -13,3 +13,5 @@ jobs:
       push_enabled: false
       ghcr_repo_owner: ${{ github.repository_owner }}
       ghcr_repo: ${{ github.repository }}
+    secrets:
+      ghcr_token: ${{ secrets.GITHUB_TOKEN }}
