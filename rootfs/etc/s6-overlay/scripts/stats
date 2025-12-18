@@ -1,5 +1,8 @@
 #!/command/with-contenv bash
-#shellcheck shell=bash disable=SC1091
+#shellcheck shell=bash
+
+# shellcheck source-path=source-stubs
+# shellcheck source-path=SCRIPTDIR
 
 source /scripts/common
 s6wrap=(s6wrap --quiet --timestamps --prepend="$(basename "$0")" --args)
@@ -18,14 +21,14 @@ if [[ -n "$PACKET_LINES" ]]; then
         NUM_PACKETS=$(echo "$L" | grep 'Packets sent in the last 60 seconds: ' | cut -d ']' -f 2 | cut -d ':' -f 2 | cut -d ',' -f 1 | tr -d ' ')
         TOTAL_PACKETS=$(echo "$L" | grep 'Packets sent in the last 60 seconds: ' | cut -d ']' -f 2 | cut -d ':' -f 3 | tr -d ' ')
         PACKETS_SINCE_LAST_UPDATE=$((PACKETS_SINCE_LAST_UPDATE + NUM_PACKETS))
-    done <<< "${PACKET_LINES}"
+    done <<<"${PACKET_LINES}"
 
-    #shellcheck disable=SC2016
     "${s6wrap[@]}" echo "Packets sent in past $STATS_INTERVAL_MINUTES minutes: $PACKETS_SINCE_LAST_UPDATE, total packets since rbfeeder start: $TOTAL_PACKETS"
 fi
 
 # truncate the log file to 150 lines
-#shellcheck disable=SC2005
-echo "$(tail -150 "$RBFEEDER_LOG_FILE")" > "$RBFEEDER_LOG_FILE"
+tmpfile="$(mktemp)"
+tail -150 "$RBFEEDER_LOG_FILE" >"$tmpfile"
+mv "$tmpfile" "$RBFEEDER_LOG_FILE"
 
 exec sleep $((STATS_INTERVAL_MINUTES * 60))

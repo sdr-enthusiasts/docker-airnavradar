@@ -1,5 +1,6 @@
 #!/command/with-contenv bash
-#shellcheck shell=bash disable=SC1091
+# shellcheck source-path=source-stubs
+# shellcheck source-path=SCRIPTDIR
 
 source /scripts/common
 s6wrap=(s6wrap --quiet --timestamps --prepend="$(basename "$0")" --args)
@@ -10,6 +11,5 @@ set -eo pipefail
 if [[ -z "$UAT_RECEIVER_HOST" ]]; then
     stop_service
 else
-    # shellcheck disable=SC2016
     exec "${s6wrap[@]}" socat -d -d TCP-LISTEN:30979,fork TCP:"$UAT_RECEIVER_HOST":"${UAT_RECEIVER_PORT:-30979}"
 fi

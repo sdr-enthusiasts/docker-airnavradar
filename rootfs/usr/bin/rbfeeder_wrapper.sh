@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-# shellcheck shell=bash disable=SC1091
+# shellcheck shell=bash
+
+# shellcheck source-path=source-stubs
+# shellcheck source-path=SCRIPTDIR
 
 # This wrapper file will determine how to run rbfeeder, either natively or via qemu-arm-static.
 # All command line arguments passed to this script will be passed directly to rbfeeder_armhf.

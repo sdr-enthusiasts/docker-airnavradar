@@ -1,11 +1,13 @@
 #!/command/with-contenv bash
-#shellcheck shell=bash disable=SC2016,SC1091,SC2154
+#shellcheck shell=bash
+# shellcheck source-path=source-stubs
+# shellcheck source-path=SCRIPTDIR
 
 source /scripts/common
 set -e
 
 WATCHDOG_TIMER="${WATCHDOG_TIMER:-300}"
-if (( WATCHDOG_TIMER < 70 )); then WATCHDOG_TIMER=70; fi
+if ((WATCHDOG_TIMER < 70)); then WATCHDOG_TIMER=70; fi
 
 if [[ $(s6-svdt /run/service/watchdog | wc -l) == 0 ]]; then
     # don't do anything on first run
@@ -19,7 +21,7 @@ LASTLOG_TIMESTAMP="$(date --date="$(echo "$LASTLOG_PACKETS_SENT" | cut -d '[' -f
 LASTLOG_NUM_PACKETS_SENT="$(echo "$LASTLOG_PACKETS_SENT" | cut -d ']' -f 2 | cut -d ':' -f 2 | cut -d ',' -f 1 | tr -d ' ')"
 
 # check to make sure we've sent packets recently
-if (( (TIMESTAMP_NOW - LASTLOG_TIMESTAMP) > WATCHDOG_TIMER )) || (( LASTLOG_NUM_PACKETS_SENT <= 1 )); then
+if (((TIMESTAMP_NOW - LASTLOG_TIMESTAMP) > WATCHDOG_TIMER)) || ((LASTLOG_NUM_PACKETS_SENT <= 1)); then
     "${s6wrap[@]}" echo "[WARNING] No packets sent in past $WATCHDOG_TIMER seconds. Restarting rbfeeder binary"
     HEALTHY=false
 else

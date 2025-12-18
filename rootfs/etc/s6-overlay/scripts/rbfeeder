@@ -1,5 +1,7 @@
 #!/command/with-contenv bash
-#shellcheck shell=bash disable=SC2016,SC1091,SC2154
+#shellcheck shell=bash
+# shellcheck source-path=source-stubs
+# shellcheck source-path=SCRIPTDIR
 
 source /scripts/common
 
@@ -13,11 +15,11 @@ if chk_enabled "$VERBOSE_LOGGING"; then
 elif chk_enabled "$QUIET_LOGS"; then
     exec "${s6wrap[@]}" /usr/bin/rbfeeder 2>/dev/stdout 1>/dev/null
 else
-    exec "${s6wrap[@]}" /usr/bin/rbfeeder > >(\
+    exec "${s6wrap[@]}" /usr/bin/rbfeeder > >(
         stdbuf -oL grep -v -e "Statistics updated every 60 seconds" \
-                           -e "Packets sent in the last 60 seconds:" \
-                           -e "Data sent:" \
-                           -e "Data received:" \
-                           -e "messages with MLAT magic timestamp" \
-        )
+            -e "Packets sent in the last 60 seconds:" \
+            -e "Data sent:" \
+            -e "Data received:" \
+            -e "messages with MLAT magic timestamp"
+    )
 fi

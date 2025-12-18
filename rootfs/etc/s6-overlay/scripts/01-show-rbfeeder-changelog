@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-#shellcheck shell=bash disable=SC1091
+#shellcheck shell=bash
+# shellcheck source-path=source-stubs
+# shellcheck source-path=SCRIPTDIR
 
 source /scripts/common
 s6wrap=(s6wrap --quiet --timestamps --prepend="$(basename "$0")" --args)
