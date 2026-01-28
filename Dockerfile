@@ -13,16 +13,18 @@ RUN set -x && \
     binutils \
     gnupg \
     xz-utils \
+    dirmngr \
     && \
     # add rb24 repo
     if [ "${TARGETARCH:0:3}" != "arm" ]; then \
-        dpkg --add-architecture armhf && \
-        RB24_PACKAGES=(rbfeeder:armhf); \
+    dpkg --add-architecture armhf && \
+    RB24_PACKAGES=(rbfeeder:armhf); \
     else \
-        RB24_PACKAGES=(rbfeeder); \
+    RB24_PACKAGES=(rbfeeder); \
     fi && \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 1D043681 && \
-    bash -c "echo 'deb https://apt.rb24.com/ bookworm main' > /etc/apt/sources.list.d/rb24.list" && \
+    gpg --keyserver keyserver.ubuntu.com --recv-keys 1D043681  && \
+    gpg --export --armor 1D043681 | gpg --dearmor -o /etc/apt/keyrings/flightradar24.gpg   && \
+    echo "deb [signed-by=/etc/apt/keyrings/flightradar24.gpg] https://apt.rb24.com/ bookworm main" | tee /etc/apt/sources.list.d/fr24feed.list  && \
     #
     # The lines below would allow the apt.rb24.com repo to be access insecurely. We were using this because their key had expired
     # However, as of 1-feb-2024, the repo was updated to contain again a valid key so this is no longer needed. Leaving it in as an archifact for future reference.
@@ -33,7 +35,7 @@ RUN set -x && \
     # instead of actually installing, just download and extract files as if we were installing it
     # we only want the files in the deb placed in /, dependencies are not required
     apt-get download "${RB24_PACKAGES[@]}" && \
-        dpkg --fsys-tarfile *.deb | tar -C / -x
+    dpkg --fsys-tarfile *.deb | tar -C / -x
 
 FROM ghcr.io/sdr-enthusiasts/docker-baseimage:wreadsb
 
@@ -64,23 +66,43 @@ RUN \
     # TEMP_PACKAGES+=(gnupg) && \
     # required to run rbfeeder
     if [ "${TARGETARCH:0:3}" != "arm" ]; then \
-        dpkg --add-architecture armhf; \
-        KEPT_PACKAGES+=(libc6:armhf) && \
-        KEPT_PACKAGES+=(libcurl4:armhf) && \
-        KEPT_PACKAGES+=(libglib2.0-0:armhf) && \
-        KEPT_PACKAGES+=(libjansson4:armhf) && \
-        KEPT_PACKAGES+=(libprotobuf-c1:armhf) && \
-        KEPT_PACKAGES+=(librtlsdr0:armhf) && \
-        KEPT_PACKAGES+=(libbladerf2:armhf); \
-        KEPT_PACKAGES+=(qemu-user-static); \
+    dpkg --add-architecture armhf; \
+    KEPT_PACKAGES+=(libc6:armhf) && \
+    # if we are on trixie, we want libglib2.0-0t64, otherwise we want libglib2.0-0
+    . /etc/os-release && \
+    # distro="$ID" && \
+    # version="$VERSION_ID" && \
+    codename="$VERSION_CODENAME" && \
+    if [[ "$codename" == "trixie" ]]; then \
+    KEPT_PACKAGES+=(libglib2.0-0t64:armhf) && \
+    KEPT_PACKAGES+=(libcurl4t64:armhf); \
     else \
-        KEPT_PACKAGES+=(libc6) && \
-        KEPT_PACKAGES+=(libcurl4) && \
-        KEPT_PACKAGES+=(libglib2.0-0) && \
-        KEPT_PACKAGES+=(libjansson4) && \
-        KEPT_PACKAGES+=(libprotobuf-c1) && \
-        KEPT_PACKAGES+=(librtlsdr0); \
-        KEPT_PACKAGES+=(libbladerf2); \
+    KEPT_PACKAGES+=(libglib2.0-0) && \
+    KEPT_PACKAGES+=(libcurl4:armhf); \
+    fi && \
+    KEPT_PACKAGES+=(libjansson4:armhf) && \
+    KEPT_PACKAGES+=(libprotobuf-c1:armhf) && \
+    KEPT_PACKAGES+=(librtlsdr0:armhf) && \
+    KEPT_PACKAGES+=(libbladerf2:armhf); \
+    KEPT_PACKAGES+=(qemu-user-static); \
+    else \
+    KEPT_PACKAGES+=(libc6) && \
+    # if we are on trixie, we want libglib2.0-0t64, otherwise we want libglib2.0-0
+    . /etc/os-release && \
+    # distro="$ID" && \
+    # version="$VERSION_ID" && \
+    codename="$VERSION_CODENAME" && \
+    if [[ "$codename" == "trixie" ]]; then \
+    KEPT_PACKAGES+=(libglib2.0-0t64) && \
+    KEPT_PACKAGES+=(libcurl4t64); \
+    else \
+    KEPT_PACKAGES+=(libglib2.0-0) && \
+    KEPT_PACKAGES+=(libcurl4); \
+    fi && \
+    KEPT_PACKAGES+=(libjansson4) && \
+    KEPT_PACKAGES+=(libprotobuf-c1) && \
+    KEPT_PACKAGES+=(librtlsdr0) && \
+    KEPT_PACKAGES+=(libbladerf2); \
     fi && \
     KEPT_PACKAGES+=(netbase) && \
     # install packages
