@@ -77,7 +77,7 @@ RUN \
     KEPT_PACKAGES+=(libglib2.0-0t64:armhf) && \
     KEPT_PACKAGES+=(libcurl4t64:armhf); \
     else \
-    KEPT_PACKAGES+=(libglib2.0-0) && \
+    KEPT_PACKAGES+=(libglib2.0-0:armhf) && \
     KEPT_PACKAGES+=(libcurl4:armhf); \
     fi && \
     KEPT_PACKAGES+=(libjansson4:armhf) && \
