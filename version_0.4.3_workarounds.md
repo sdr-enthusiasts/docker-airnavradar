@@ -28,7 +28,7 @@ If using `docker-compose`, add the following to the `volumes:` section of your r
 
 ```yaml
 volumes:
-  - /opt/adsb/rb/:/sys/class/thermal
+  - /opt/adsb/rb/:/sys/class/thermal:ro
 ```
 
 ### Workaround for CPU Serial (should no longer be necessary)
@@ -50,7 +50,7 @@ chmod u+w /opt/adsb/rb/fake_cpuinfo
 command -v hexdump >/dev/null 2>&1 || sudo apt install -y bsdmainutils
 
 # ... and add a fake serial number to the end
-echo -e "serial\t\t: $(hexdump -n 8 -e '4/4 "%08X" 1 "\n"' /dev/urandom | tr '[:upper:]' '[:lower:]')" >> /opt/adsb/rb/fake_cpuinfo
+echo -e "serial\t\t: $(hexdump -n 8 -e '2/4 "%08X" 1 "\n"' /dev/urandom | tr '[:upper:]' '[:lower:]')" >> /opt/adsb/rb/fake_cpuinfo
 ```
 
 The `hexdump...` in the command above will generate a random hexadecimal number in the format of a Raspberry Pi serial number.
