@@ -22,7 +22,7 @@ echo 24000 > /opt/adsb/rb/thermal_zone0/temp
 
 You can now map this file into your container.
 
-If using `docker run`, simply add `-v /opt/adsb/rb/radarbox_segfault_fix:/sys/class/thermal:ro` to your command.
+If using `docker run`, simply add `-v /opt/adsb/rb:/sys/class/thermal:ro` to your command.
 
 If using `docker-compose`, add the following to the `volumes:` section of your radarbox container definition:
 
@@ -47,7 +47,7 @@ cp /proc/cpuinfo /opt/adsb/rb/fake_cpuinfo
 chmod u+w /opt/adsb/rb/fake_cpuinfo
 
 # ... make sure we have hexdump installed
-[[ ! which hexdump >/dev/null 2>&1 ]] && sudo apt install -y bsdmainutils
+command -v hexdump >/dev/null 2>&1 || sudo apt install -y bsdmainutils
 
 # ... and add a fake serial number to the end
 echo -e "serial\t\t: $(hexdump -n 8 -e '4/4 "%08X" 1 "\n"' /dev/urandom | tr '[:upper:]' '[:lower:]')" >> /opt/adsb/rb/fake_cpuinfo
