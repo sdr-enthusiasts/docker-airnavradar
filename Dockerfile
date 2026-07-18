@@ -126,7 +126,7 @@ RUN \
     RBFEEDER_VERSION=$(/usr/bin/rbfeeder --no-start --version | cut -d " " -f 2,4 | tr -d ")" | tr " " "-") && \
     echo "$RBFEEDER_VERSION" > /CONTAINER_VERSION && \
     # delete unnecessary qemu binaries to save lots of space
-    { find /usr/bin -regex '/usr/bin/qemu-.*-static'  | grep -v qemu-arm-static | xargs rm -vf {} || true; } && \
+    { find /usr/bin -regex '/usr/bin/qemu-.*'  | grep -v qemu-arm | xargs rm -vf {} || true; } && \
     # clean up
     apt-get remove -y "${TEMP_PACKAGES[@]}" && \
     apt-get autoremove -y && \
