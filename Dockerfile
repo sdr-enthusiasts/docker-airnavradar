@@ -73,12 +73,12 @@ RUN \
     # distro="$ID" && \
     # version="$VERSION_ID" && \
     codename="$VERSION_CODENAME" && \
-    if [[ "$codename" == "trixie" ]]; then \
-    KEPT_PACKAGES+=(libglib2.0-0t64:armhf) && \
-    KEPT_PACKAGES+=(libcurl4t64:armhf); \
-    else \
+    if [[ "$codename" == "bookworm" ]]; then \
     KEPT_PACKAGES+=(libglib2.0-0:armhf) && \
     KEPT_PACKAGES+=(libcurl4:armhf); \
+    else \
+    KEPT_PACKAGES+=(libglib2.0-0t64:armhf) && \
+    KEPT_PACKAGES+=(libcurl4t64:armhf); \
     fi && \
     KEPT_PACKAGES+=(libjansson4:armhf) && \
     KEPT_PACKAGES+=(libprotobuf-c1:armhf) && \
@@ -92,12 +92,12 @@ RUN \
     # distro="$ID" && \
     # version="$VERSION_ID" && \
     codename="$VERSION_CODENAME" && \
-    if [[ "$codename" == "trixie" ]]; then \
-    KEPT_PACKAGES+=(libglib2.0-0t64) && \
-    KEPT_PACKAGES+=(libcurl4t64); \
-    else \
+    if [[ "$codename" == "bookworm" ]]; then \
     KEPT_PACKAGES+=(libglib2.0-0) && \
     KEPT_PACKAGES+=(libcurl4); \
+    else \
+    KEPT_PACKAGES+=(libglib2.0-0t64) && \
+    KEPT_PACKAGES+=(libcurl4t64); \
     fi && \
     KEPT_PACKAGES+=(libjansson4) && \
     KEPT_PACKAGES+=(libprotobuf-c1) && \
@@ -111,6 +111,9 @@ RUN \
     "${KEPT_PACKAGES[@]}" \
     "${TEMP_PACKAGES[@]}" \
     && \
+    # qemu 11 (forky) made qemu-user-static transitional: qemu-user ships the static
+    # binary as qemu-arm. Keep the qemu-arm-static name rbfeeder_wrapper.sh calls.
+    if [ ! -e /usr/bin/qemu-arm-static ] && [ -e /usr/bin/qemu-arm ]; then ln -s qemu-arm /usr/bin/qemu-arm-static; fi && \
     # download files from the downloader image that is now mounted at /downloader
     mkdir -p /usr/share/doc/rbfeeder && \
     cp -f /downloader/usr/bin/rbfeeder /usr/bin/rbfeeder_arm && \
