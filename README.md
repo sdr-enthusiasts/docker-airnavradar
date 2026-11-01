@@ -184,6 +184,7 @@ There are a series of available environment variables:
 | `MLAT_RESULTS_BEASTHOST` | a hostname or IP, where MLAT results should be sent. (disables 30105 results listen port)                                                                                                                                                                               |          |
 | `MLAT_RESULTS_BEASTPORT` | a port number, specify the TCP port number where MLAT results should be sent.                                                                                                                                                                                           | `30104`  |
 | `RB_SERVER`              | Optional. If set to `true`, the container will attempt to connect to one of two Airnav Radar Servers that are known to work as of 22-Nov-2023. You can also explicitly set it to a hostname or IP address. If unset, the default settings of Airnav Radar will be used. | Unset    |
+| `WATCHDOG_DISABLE_PACKET_CHECK` | Disable "No packets sent in past 300 seconds. Restarting rbfeeder binary"                                                                                                                                                                                        | `false`  |
 
 ## Ports
 
