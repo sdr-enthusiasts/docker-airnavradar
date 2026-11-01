@@ -19,12 +19,14 @@ LASTLOG_PACKETS_SENT="$(grep "Packets sent in the last 60 seconds" "$RBFEEDER_LO
 LASTLOG_TIMESTAMP="$(date --date="$(echo "$LASTLOG_PACKETS_SENT" | cut -d '[' -f 2 | cut -d ']' -f 1)" +%s)"
 LASTLOG_NUM_PACKETS_SENT="$(echo "$LASTLOG_PACKETS_SENT" | cut -d ']' -f 2 | cut -d ':' -f 2 | cut -d ',' -f 1 | tr -d ' ')"
 
-# check to make sure we've sent packets recently
-if (((TIMESTAMP_NOW - LASTLOG_TIMESTAMP) > WATCHDOG_TIMER)) || ((LASTLOG_NUM_PACKETS_SENT <= 1)); then
-    "${s6wrap[@]}" echo "[WARNING] No packets sent in past $WATCHDOG_TIMER seconds. Restarting rbfeeder binary"
-    HEALTHY=false
-else
-    if chk_enabled "$VERBOSE_LOGGING"; then "${s6wrap[@]}" echo "[INFO] $LASTLOG_NUM_PACKETS_SENT packets sent in past 30 seconds. HEALTHY"; fi
+if ! chk_enabled "$WATCHDOG_DISABLE_PACKET_CHECK"; then
+    # check to make sure we've sent packets recently
+    if (((TIMESTAMP_NOW - LASTLOG_TIMESTAMP) > WATCHDOG_TIMER)) || ((LASTLOG_NUM_PACKETS_SENT <= 1)); then
+        "${s6wrap[@]}" echo "[WARNING] No packets sent in past $WATCHDOG_TIMER seconds. Restarting rbfeeder binary"
+        HEALTHY=false
+    else
+        if chk_enabled "$VERBOSE_LOGGING"; then "${s6wrap[@]}" echo "[INFO] $LASTLOG_NUM_PACKETS_SENT packets sent in past 30 seconds. HEALTHY"; fi
+    fi
 fi
 
 CUR_BEASTIP="$(sed -n 's/external_host=\(.*\)/\1/p' /etc/rbfeeder.ini)"
