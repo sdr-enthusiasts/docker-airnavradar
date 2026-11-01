@@ -6,7 +6,6 @@
 source /scripts/common
 set -e
 
-WATCHDOG_TIMER="${WATCHDOG_TIMER:-300}"
 if ((WATCHDOG_TIMER < 70)); then WATCHDOG_TIMER=70; fi
 
 if [[ $(s6-svdt /run/service/watchdog | wc -l) == 0 ]]; then
