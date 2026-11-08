@@ -68,7 +68,7 @@ RUN \
     # TEMP_PACKAGES+=(gnupg) && \
     # required to run rbfeeder
     if [ "${TARGETARCH:0:3}" != "arm" ]; then \
-    dpkg --add-architecture armhf; \
+    dpkg --add-architecture armhf && \
     KEPT_PACKAGES+=(libc6:armhf) && \
     # if we are on trixie, we want libglib2.0-0t64, otherwise we want libglib2.0-0
     . /etc/os-release && \
